@@ -6,7 +6,7 @@ double f(double x) {
     return 3 * x - cos(x) - 1;
 }
 
-// False Position Method with Error Calculation
+// False Position Method with Absolute Error Calculation
 void falsePosition(double xl, double xu, int iterations) {
     double xr = xl, xr_old, fxr, error = 0;
 
@@ -20,7 +20,7 @@ void falsePosition(double xl, double xu, int iterations) {
         fxr = f(xr);
 
         if (i > 1) {
-            error = fabs((xr - xr_old) / xr) * 100;  // Calculate percentage error
+            error = fabs(xr - xr_old);  // Absolute error
         }
 
         cout << left << setw(8) << i
@@ -28,7 +28,7 @@ void falsePosition(double xl, double xu, int iterations) {
              << setw(14) << xu
              << setw(14) << xr
              << setw(14) << fxr
-             << error << "%" << endl;
+             << error << endl;
 
         if (fxr == 0.0) {
             break;
