@@ -1,72 +1,104 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Function definition: f(x) = 3x - cos(x) + 1
+// Define the function f(x) = 3x - cos(x) - 1
 double f(double x)
 {
     return 3 * x - cos(x) - 1;
 }
 
-// Bisection Method with Absolute Error Calculation
-void bisection(double xl, double xu, int iterations)
+// Bisection Method
+void bisection(double xl, double xu, int maxIterations, double stopError, bool useError)
 {
-    double xr_old, fxr, error = 0;
-    double xr = (xl + xu) / 2;
+    double xOld = 0, xNew = 0, error = 100;
 
-    cout << fixed << setprecision(6);
-    cout << "Iter     xl            xu            xr            f(xr)         Error" << endl;
-    cout << "-------------------------------------------------------------------------" << endl;
+    cout << setw(10) << "Iter"
+         << setw(12) << "xl"
+         << setw(12) << "xu"
+         << setw(12) << "x"
+         << setw(15) << "Error(%)" << endl;
 
-    for (int i = 1; i <= iterations; i++)
+    for (int i = 1; i <= maxIterations; ++i)
     {
-        xr_old = xr;
-        xr = (xl + xu) / 2;
-        fxr = f(xr);
+        xNew = (xl + xu) / 2.0;
+
+        cout << setw(10) << i
+             << setw(12) << fixed << setprecision(6) << xl
+             << setw(12) << xu
+             << setw(12) << xNew;
 
         if (i > 1)
         {
-            error = fabs(xr - xr_old);  // Absolute error
-        }
+            error = fabs((xNew - xOld) / xNew) * 100;
+            cout << setw(15) << error << endl;
 
-        cout << left << setw(8) << i
-             << setw(14) << xl
-             << setw(14) << xu
-             << setw(14) << xr
-             << setw(14) << fxr
-             << error << endl;
-
-        if (fxr == 0.0)
-        {
-            break;
-        }
-        else if (f(xl) * fxr < 0)
-        {
-            xu = xr;
+            if (useError && error < stopError)
+                break;
         }
         else
         {
-            xl = xr;
+            cout << setw(15) << "-" << endl;
         }
+
+        if (f(xNew) == 0)
+            break;
+        else if (f(xl) * f(xNew) < 0)
+            xu = xNew;
+        else
+            xl = xNew;
+
+        xOld = xNew;
     }
-    cout << "\nApproximate Root after " << iterations << " iterations: " << xr << endl;
+
+    cout << "\nApproximate root: " << fixed << setprecision(6) << xNew << endl;
 }
 
-// Main function
 int main()
 {
     double xl, xu;
-    int iterations;
+    int choice;
 
-    // Input interval and iterations
-    cout << "Enter lower bound (xl): ";
-    cin >> xl;
-    cout << "Enter upper bound (xu): ";
-    cin >> xu;
-    cout << "Enter number of iterations: ";
-    cin >> iterations;
+    // Ask for valid interval
+    while (true)
+    {
+        cout << "Enter lower bound (xl): ";
+        cin >> xl;
+        cout << "Enter upper bound (xu): ";
+        cin >> xu;
 
-    // Perform Bisection Method
-    bisection(xl, xu, iterations);
+        if (f(xl) * f(xu) < 0)
+            break;
+        else
+            cout << "Invalid interval! f(xl) and f(xu) must have opposite signs.\n\n";
+    }
+
+    cout << "\nChoose an option:\n";
+    cout << "1. Fixed number of iterations\n";
+    cout << "2. Stop when Approximate Error is small enough\n";
+    cout << "Enter your choice (1 or 2): ";
+    cin >> choice;
+
+    switch (choice)
+    {
+    case 1:
+    {
+        int n;
+        cout << "Enter number of iterations: ";
+        cin >> n;
+        bisection(xl, xu, n, 0.0, false);
+        break;
+    }
+    case 2:
+    {
+        double approxError;
+        cout << "Enter maximum approximate error (e.g., 0.01): ";
+        cin >> approxError;
+        bisection(xl, xu, 1000, approxError, true); // Max 1000 iterations as safety
+        break;
+    }
+    default:
+        cout << "Invalid choice! Please enter 1 or 2.\n";
+    }
 
     return 0;
 }
