@@ -2,24 +2,28 @@
 using namespace std;
 
 // Function definition: f(x) = 3x - cos(x) + 1
-double f(double x) {
+double f(double x)
+{
     return 3 * x - cos(x) - 1;
 }
 
 // False Position Method with Absolute Error Calculation
-void falsePosition(double xl, double xu, int iterations) {
+void falsePosition(double xl, double xu, int iterations)
+{
     double xr = xl, xr_old, fxr, error = 0;
 
     cout << fixed << setprecision(6);
     cout << "Iter     xl            xu            xr            f(xr)         Error" << endl;
     cout << "-------------------------------------------------------------------------" << endl;
 
-    for (int i = 1; i <= iterations; i++) {
+    for (int i = 1; i <= iterations; i++)
+    {
         xr_old = xr;
         xr = (xl * f(xu) - xu * f(xl)) / (f(xu) - f(xl));
         fxr = f(xr);
 
-        if (i > 1) {
+        if (i > 1)
+        {
             error = fabs(xr - xr_old);  // Absolute error
         }
 
@@ -30,11 +34,16 @@ void falsePosition(double xl, double xu, int iterations) {
              << setw(14) << fxr
              << error << endl;
 
-        if (fxr == 0.0) {
+        if (fxr == 0.0)
+        {
             break;
-        } else if (f(xl) * fxr < 0) {
+        }
+        else if (f(xl) * fxr < 0)
+        {
             xu = xr;
-        } else {
+        }
+        else
+        {
             xl = xr;
         }
     }
@@ -42,7 +51,8 @@ void falsePosition(double xl, double xu, int iterations) {
 }
 
 // Main function
-int main() {
+int main()
+{
     double xl, xu;
     int iterations;
 
