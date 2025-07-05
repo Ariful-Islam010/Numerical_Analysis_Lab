@@ -1,62 +1,67 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Function definition: f(x) = 3x - cos(x) - 1
-double f(double x) {
+// Define the function f(x) = 3x - cos(x) - 1
+double f(double x)
+{
     return 3 * x - cos(x) - 1;
 }
 
 // False Position Method
-void falsePosition(double xl, double xu, int maxIterations, double stopError, bool useError) {
-    double xr = xl, xr_old, fxr, error = 100;
+void falsePosition(double xl, double xu, int maxIterations, double stopError, bool useError)
+{
+    double xOld = 0, xNew = 0, error = 100;
 
-    cout << fixed << setprecision(6);
-    cout << "Iter     xl            xu            xr            f(xr)         Error(%)" << endl;
-    cout << "--------------------------------------------------------------------------" << endl;
+    cout << setw(10) << "Iter"
+         << setw(12) << "xl"
+         << setw(12) << "xu"
+         << setw(12) << "x"
+         << setw(15) << "Error(%)" << endl;
 
-    for (int i = 1; i <= maxIterations; ++i) {
-        xr_old = xr;
-        xr = (xl * f(xu) - xu * f(xl)) / (f(xu) - f(xl));
-        fxr = f(xr);
+    for (int i = 1; i <= maxIterations; ++i)
+    {
+        // False Position formula
+        xNew = xu - (f(xu) * (xl - xu)) / (f(xl) - f(xu));
+        cout <<fixed << setprecision(6);
+        cout << setw(10) << i
+             << setw(12) << xl
+             << setw(12) << xu
+             << setw(12) << xNew;
 
-        if (i > 1) {
-            error = fabs((xr - xr_old) / xr) * 100;
+        if (i > 1)
+        {
+            error = fabs((xNew - xOld) / xNew) * 100;
+            cout << setw(15) << error << endl;
+
+            if (useError && error < stopError)
+                break;
+        }
+        else
+        {
+            cout << setw(15) << "-" << endl;
         }
 
-        cout << left << setw(8) << i
-             << setw(14) << xl
-             << setw(14) << xu
-             << setw(14) << xr
-             << setw(14) << fxr;
-
-        if (i == 1)
-            cout << "-";
-        else
-            cout << error;
-
-        cout << endl;
-
-        if (fxr == 0.0)
+        if (f(xNew) == 0)
             break;
-        else if (f(xl) * fxr < 0)
-            xu = xr;
+        else if (f(xl) * f(xNew) < 0)
+            xu = xNew;
         else
-            xl = xr;
+            xl = xNew;
 
-        if (useError && i > 1 && error < stopError)
-            break;
+        xOld = xNew;
     }
 
-    cout << "\nApproximate Root: " << xr << endl;
+    cout << "\nApproximate root: " << fixed << setprecision(6) << xNew << endl;
 }
 
-// Main function
-int main() {
+int main()
+{
     double xl, xu;
-    int choice;
+    int methodChoice;
 
-    // Ensure valid xl and xu
-    while (true) {
+    // Valid interval input
+    while (true)
+    {
         cout << "Enter lower bound (xl): ";
         cin >> xl;
         cout << "Enter upper bound (xu): ";
@@ -72,26 +77,27 @@ int main() {
     cout << "1. Fixed number of iterations\n";
     cout << "2. Stop when Approximate Error is small enough\n";
     cout << "Enter your choice (1 or 2): ";
-    cin >> choice;
+    cin >> methodChoice;
 
-    switch (choice) {
-        case 1: {
-            int iterations;
-            cout << "Enter number of iterations: ";
-            cin >> iterations;
-            falsePosition(xl, xu, iterations, 0.0, false);
-            break;
-        }
-        case 2: {
-            double stopError;
-            cout << "Enter maximum approximate error (in %): ";
-            cin >> stopError;
-            falsePosition(xl, xu, 1000, stopError, true);  // max 1000 iterations
-            break;
-        }
-        default:
-            cout << "Invalid choice! Please enter 1 or 2.\n";
+    if (methodChoice == 1)
+    {
+        int n;
+        cout << "Enter number of iterations: ";
+        cin >> n;
+        falsePosition(xl, xu, n, 0.0, false);
+    }
+    else if (methodChoice == 2)
+    {
+        double approxError;
+        cout << "Enter maximum approximate error (e.g., 0.01): ";
+        cin >> approxError;
+        falsePosition(xl, xu, 1000, approxError, true); // Safety limit
+    }
+    else
+    {
+        cout << "Invalid choice! Please enter 1 or 2.\n";
     }
 
     return 0;
 }
+
