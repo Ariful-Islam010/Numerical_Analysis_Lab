@@ -1,3 +1,4 @@
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -15,15 +16,15 @@ void bisection(double xl, double xu, int maxIterations, double stopError, bool u
     cout << setw(10) << "Iter"
          << setw(12) << "xl"
          << setw(12) << "xu"
-         << setw(12) << "x"
+         << setw(12) << "xr"
          << setw(15) << "Error(%)" << endl;
 
     for (int i = 1; i <= maxIterations; ++i)
     {
         xNew = (xl + xu) / 2.0;
-
+        cout<<fixed << setprecision(6) ;
         cout << setw(10) << i
-             << setw(12) << fixed << setprecision(6) << xl
+             << setw(12) << xl
              << setw(12) << xu
              << setw(12) << xNew;
 
@@ -59,7 +60,7 @@ int main()
     int choice;
 
     // Ask for valid interval
-    while (true)
+    while (1)
     {
         cout << "Enter lower bound (xl): ";
         cin >> xl;
@@ -69,7 +70,7 @@ int main()
         if (f(xl) * f(xu) < 0)
             break;
         else
-            cout << "Invalid interval! f(xl) and f(xu) must have opposite signs.\n\n";
+            cout << "Invalid interval! f(xl) and f(xu) must have opposite signs\n"<<endl;
     }
 
     cout << "\nChoose an option:\n";
@@ -78,25 +79,22 @@ int main()
     cout << "Enter your choice (1 or 2): ";
     cin >> choice;
 
-    switch (choice)
-    {
-    case 1:
+    if (choice == 1)
     {
         int n;
         cout << "Enter number of iterations: ";
         cin >> n;
         bisection(xl, xu, n, 0.0, false);
-        break;
     }
-    case 2:
+    else if (choice == 2)
     {
         double approxError;
         cout << "Enter maximum approximate error (e.g., 0.01): ";
         cin >> approxError;
         bisection(xl, xu, 1000, approxError, true); // Max 1000 iterations as safety
-        break;
     }
-    default:
+    else
+    {
         cout << "Invalid choice! Please enter 1 or 2.\n";
     }
 
